@@ -36,5 +36,7 @@ public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
         builder.Property(c => c.FechaNacimiento)
             .HasColumnType("date")
             .HasColumnName("fecha_nacimiento");
+
+        builder.HasIndex(c => new {c.Nombre, c.Apellidos});
     }
 }

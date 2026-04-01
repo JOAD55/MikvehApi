@@ -1,0 +1,10 @@
+using System;
+using MikvehApi.Models;
+
+namespace MikvehApi.Repositories.Interfaces;
+
+public interface ICitaRepository : IRepository<Cita>
+{
+    Task<Cita?> GetWithDetallesAsync(int id);
+    Task<IEnumerable<Cita>> GetByPeriodAsync(DateTime startDate, DateTime endDate);
+}

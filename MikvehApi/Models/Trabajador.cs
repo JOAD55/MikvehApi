@@ -8,7 +8,7 @@ public class Trabajador
     public string Nombre { get; set; } = string.Empty;
     public string Apellidos { get; set; } = string.Empty;
     public string Usuario { get; set; } = string.Empty;
-    public string Contrasena { get; set; } = string.Empty;
+    public string ContrasenaHash { get; set; } = string.Empty;
     public string? Telefono { get; set; }
     public string? Email { get; set; }
     public DateTime? FechaNacimiento { get; set; }

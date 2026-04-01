@@ -28,7 +28,7 @@ public class TrabajadorConfiguration : IEntityTypeConfiguration<Trabajador>
             .IsUnicode(false)
             .HasColumnName("usuario");
 
-        builder.Property(t => t.Contrasena)
+        builder.Property(t => t.ContrasenaHash)
             .HasMaxLength(255)
             .IsUnicode(false)
             .HasColumnName("contrasena_hash");
@@ -55,5 +55,7 @@ public class TrabajadorConfiguration : IEntityTypeConfiguration<Trabajador>
             .HasForeignKey(t => t.RolId)
             .OnDelete(DeleteBehavior.Restrict)
             .HasConstraintName("FK_trabajadores_rol");
+
+        builder.HasIndex(t => t.Usuario).IsUnique();
     }
 }
