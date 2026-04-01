@@ -8,14 +8,14 @@ namespace MikvehApi.Repositories;
 public abstract class Repository<T> : IRepository<T> where T : class
 {
     protected readonly AppDbContext _context;
-    public Repository(AppDbContext context) { _context = context; }
+    public Repository(AppDbContext context) => _context = context;
 
-    public async Task<T?> GetByIdAsync(int id)
+    public virtual async Task<T?> GetByIdAsync(int id)
     {
         return await _context.Set<T>().FindAsync(id);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
         return await _context.Set<T>().ToListAsync();
     }
@@ -35,7 +35,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
     public async Task DeleteAsync(int id)
     {
         var entity = await GetByIdAsync(id);
-        if(entity is not null)
+        if (entity is not null)
         {
             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();

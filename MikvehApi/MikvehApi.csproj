@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -21,12 +22,15 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Data\Configurations\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Interfaces\" />
     <Folder Include="Data\" />
     <Folder Include="Repositories\" />
     <Folder Include="Repositories\Interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="DTOs\TrabajadorDto.cs" />
   </ItemGroup>
 
 </Project>
