@@ -13,7 +13,7 @@ public class TrabajadorDto
     public string? Email { get; set; }
     public DateTime? FechaNacimiento { get; set; }
 
-    public int RolId { get; set; }
+    public int? RolId { get; set; }
     public string? RolNombre { get; set; }
 }
 

@@ -23,7 +23,9 @@ public class TrabajadorService : ITrabajadorService
             Usuario = dto.Usuario,
             ContrasenaHash = contrasenaHash,
             Telefono = dto.Telefono,
-            Email = dto.Email
+            Email = dto.Email,
+            FechaNacimiento = dto.FechaNacimiento,
+            RolId = dto.RolId
         };
         await _trabajadorRepository.AddAsync(trabajador);
 
@@ -39,6 +41,8 @@ public class TrabajadorService : ITrabajadorService
         Usuario = entity?.Usuario ?? string.Empty,
         Telefono = entity?.Telefono ?? string.Empty,
         Email = entity?.Email ?? string.Empty,
-        FechaNacimiento = entity?.FechaNacimiento
+        FechaNacimiento = entity?.FechaNacimiento,
+        RolId = entity?.RolId,
+        RolNombre = entity?.Rol.Nombre
     };
 }

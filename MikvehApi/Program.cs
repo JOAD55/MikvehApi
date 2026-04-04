@@ -2,12 +2,19 @@ using Microsoft.EntityFrameworkCore;
 using MikvehApi.Data;
 using MikvehApi.Repositories;
 using MikvehApi.Repositories.Interfaces;
+using MikvehApi.Services;
+using MikvehApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -23,6 +30,9 @@ builder.Services.AddScoped<IPaqueteRepository, PaqueteRepository>();
 builder.Services.AddScoped<IRolRepository, RolRepository>();
 builder.Services.AddScoped<IServicioRepository, ServicioRepository>();
 builder.Services.AddScoped<ITrabajadorRepository, TrabajadorRepository>();
+
+// Services
+builder.Services.AddScoped<IRolService, RolService>();
 
 var app = builder.Build();
 
