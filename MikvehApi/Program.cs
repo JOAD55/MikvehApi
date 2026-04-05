@@ -33,6 +33,7 @@ builder.Services.AddScoped<ITrabajadorRepository, TrabajadorRepository>();
 
 // Services
 builder.Services.AddScoped<IRolService, RolService>();
+builder.Services.AddScoped<ITrabajadorService, TrabajadorService>();
 
 var app = builder.Build();
 

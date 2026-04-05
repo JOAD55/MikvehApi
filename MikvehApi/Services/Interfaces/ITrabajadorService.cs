@@ -3,7 +3,7 @@ using MikvehApi.DTOs;
 
 namespace MikvehApi.Services.Interfaces;
 
-public interface ITrabajadorService
+public interface ITrabajadorService : IGenericCrudService<TrabajadorDto, CreateTrabajadorDto, UpdateTrabajadorDto>
 {
-    Task<TrabajadorDto> CreateAsync(CrearTrabajadorDto dto);
+    Task<TrabajadorDto?> GetByUserAsync(string user);
 }
