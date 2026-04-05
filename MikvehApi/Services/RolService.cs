@@ -10,7 +10,7 @@ public class RolService(IRolRepository rolRepository) : IRolService
 {
     private readonly IRolRepository _rolRepository = rolRepository;
 
-    public async Task<RolDto> CreateAsync(CrearRolDto dto)
+    public async Task<RolDto> CreateAsync(CreateRolDto dto)
     {
         var rol = new Rol { Nombre = dto.Nombre, Descripcion = dto.Descripcion };
 
@@ -34,7 +34,7 @@ public class RolService(IRolRepository rolRepository) : IRolService
         return ToDto(rol);
     }
 
-    public async Task<RolDto?> UpdateAsync(int id, ActualizarRolDto dto)
+    public async Task<RolDto?> UpdateAsync(int id, UpdateRolDto dto)
     {
         var rol = await _rolRepository.GetByIdAsync(id);
 

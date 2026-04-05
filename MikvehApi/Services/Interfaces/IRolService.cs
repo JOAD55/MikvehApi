@@ -4,4 +4,4 @@ using MikvehApi.Models;
 
 namespace MikvehApi.Services.Interfaces;
 
-public interface IRolService : IGenericCrudService<RolDto, CrearRolDto, ActualizarRolDto> { }
+public interface IRolService : IGenericCrudService<RolDto, CreateRolDto, UpdateRolDto> { }
