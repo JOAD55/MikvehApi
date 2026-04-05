@@ -38,15 +38,17 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
     public async Task<TrabajadorDto> CreateAsync(CreateTrabajadorDto dto)
     {
         string contrasenaHash = BCrypt.Net.BCrypt.HashPassword(dto.Contrasena);
+        string lowerUser = dto.Usuario.ToLower();
+        string? lowerEmail = dto.Email?.ToLower();
 
         var trabajador = new Trabajador
         {
             Nombre = dto.Nombre,
             Apellidos = dto.Apellidos,
-            Usuario = dto.Usuario,
+            Usuario = lowerUser,
             ContrasenaHash = contrasenaHash,
             Telefono = dto.Telefono,
-            Email = dto.Email,
+            Email = lowerEmail,
             FechaNacimiento = dto.FechaNacimiento,
             RolId = dto.RolId
         };
