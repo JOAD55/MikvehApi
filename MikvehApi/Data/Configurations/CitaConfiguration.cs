@@ -19,6 +19,10 @@ public class CitaConfiguration : IEntityTypeConfiguration<Cita>
             .HasColumnType("datetime")
             .HasColumnName("nombre_campo");
 
+        builder.Property(c => c.Descripcion)
+            .HasMaxLength(500)
+            .HasColumnName("descripcion");
+
         builder.Property(c => c.TotalPagar)
             .HasColumnType("decimal(10,2)")
             .HasColumnName("total_pagar");
