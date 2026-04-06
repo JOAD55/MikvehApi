@@ -6,6 +6,7 @@ public class Cita
 {
     public int CitaId { get; set; }
     public DateTime FechaHoraCita { get; set; }
+    public string? Descripcion { get; set; }
     public decimal TotalPagar { get; set; }
     public int ClienteId { get; set; }
     public Cliente Cliente { get; set; } = null!;
