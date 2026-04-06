@@ -20,7 +20,7 @@ public class CitaDto
     {
         CitaId = cita.CitaId,
         FechaHoraCita = cita.FechaHoraCita,
-        Descripcion = cita.Descripcion,
+        Descripcion = cita.Descripcion?? string.Empty,
         TotalPagar = cita.TotalPagar,
         ClienteId = cita.ClienteId,
         ClienteNombre = cita.Cliente?.Nombre ?? string.Empty,
@@ -33,7 +33,7 @@ public class CitaDto
 public class CreateCitaDto
 {
     [Required(ErrorMessage = "El campo de fecha es obligatorio")]
-    public DateTime? FechaHoraCita { get; set; }
+    public DateTime FechaHoraCita { get; set; }
     public string? Descripcion { get; set; }
     public int ClienteId { get; set; }
     public int? TrabajadorId { get; set; }
