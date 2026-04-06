@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using MikvehApi.Models;
 
 namespace MikvehApi.DTOs;
@@ -6,6 +7,7 @@ public class CitaDto
 {
     public int CitaId { get; set; }
     public DateTime FechaHoraCita { get; set; }
+    public string? Descripcion { get; set; }
     public decimal TotalPagar { get; set; }
     public int ClienteId { get; set; }
     public string? ClienteNombre { get; set; }
@@ -18,6 +20,7 @@ public class CitaDto
     {
         CitaId = cita.CitaId,
         FechaHoraCita = cita.FechaHoraCita,
+        Descripcion = cita.Descripcion,
         TotalPagar = cita.TotalPagar,
         ClienteId = cita.ClienteId,
         ClienteNombre = cita.Cliente?.Nombre ?? string.Empty,
@@ -25,4 +28,20 @@ public class CitaDto
         TrabajadorId = cita.TrabajadorId,
         TrabajadorNombre = cita.Trabajador?.Nombre ?? string.Empty
     };
+}
+
+public class CreateCitaDto
+{
+    [Required(ErrorMessage = "El campo de fecha es obligatorio")]
+    public DateTime? FechaHoraCita { get; set; }
+    public string? Descripcion { get; set; }
+    public int ClienteId { get; set; }
+    public int? TrabajadorId { get; set; }
+}
+
+public class UpdateCitaDto
+{
+    public DateTime? FechaHoraCita { get; set; }
+    public string? Descripcion { get; set; }
+    public int? TrabajadorId { get; set; }
 }
