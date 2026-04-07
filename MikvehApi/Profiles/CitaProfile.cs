@@ -17,5 +17,7 @@ public class CitaProfile : Profile
                     src.Trabajador.Nombre : string.Empty));
 
         CreateMap<Cita, DetailCitaDto>();
+
+        CreateMap<CreateCitaDto, Cita>();
     }
 }
