@@ -12,6 +12,12 @@ public class ClienteDto
     public DateTime? FechaNacimiento { get; set; }
 }
 
+public class SummaryClienteDto
+{
+    public int ClienteId { get; set; }
+    public string NombreCompleto { get; set; } = string.Empty;
+}
+
 public class CreateClienteDto
 {
     public string Nombre { get; set; } = string.Empty;
