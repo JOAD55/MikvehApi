@@ -14,17 +14,11 @@ public class CitaService(ICitaRepository citaRepository, IMapper mapper) : ICita
 
     public async Task<CitaDto> CreateAsync(CreateCitaDto dto)
     {
-        var cita = new Cita
-        {
-            FechaHoraCita = dto.FechaHoraCita,
-            Descripcion = dto.Descripcion,
-            ClienteId = dto.ClienteId,
-            TrabajadorId = dto.TrabajadorId
-        };
+        var cita = _mapper.Map<Cita>(dto);
 
         await _citaRepository.AddAsync(cita);
 
-        return CitaDto.FromEntity(cita);
+        return _mapper.Map<CitaDto>(cita);
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -84,6 +78,6 @@ public class CitaService(ICitaRepository citaRepository, IMapper mapper) : ICita
 
         await _citaRepository.UpdateAsync(cita);
 
-        return CitaDto.FromEntity(cita);
+        return _mapper.Map<CitaDto>(cita);
     }
 }
