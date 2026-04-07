@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MikvehApi.Data;
+using MikvehApi.Profiles;
 using MikvehApi.Repositories;
 using MikvehApi.Repositories.Interfaces;
 using MikvehApi.Services;
@@ -40,7 +41,7 @@ builder.Services.AddScoped<ICitaService, CitaService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
 
 var app = builder.Build();
 
