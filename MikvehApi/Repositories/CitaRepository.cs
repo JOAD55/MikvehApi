@@ -9,13 +9,25 @@ namespace MikvehApi.Repositories;
 
 public class CitaRepository : Repository<Cita>, ICitaRepository
 {
-    public CitaRepository(AppDbContext context, IMapper mapper) : base(context, mapper) { }
+    public CitaRepository(AppDbContext context) : base(context) { }
 
     public override async Task<IEnumerable<Cita>> GetAllAsync()
     {
         return await _context.Citas
                 .Include(c => c.Cliente)
                 .Include(c => c.Trabajador)
+                .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Cita>> GetAllWithDetailsAsync()
+    {
+        return await _context.Citas
+                .Include(c => c.Cliente)
+                .Include(c => c.Trabajador)
+                .Include(c => c.DetallesCita)
+                    .ThenInclude(d => d.Servicio)
+                .Include(c => c.DetallesCita)
+                    .ThenInclude(d => d.Paquete)
                 .ToListAsync();
     }
 

@@ -8,5 +8,5 @@ namespace MikvehApi.Repositories;
 
 public class PaqueteRepository : Repository<Paquete>, IPaqueteRepository
 {
-    public PaqueteRepository(AppDbContext context, IMapper mapper) : base(context, mapper) { }
+    public PaqueteRepository(AppDbContext context) : base(context) { }
 }

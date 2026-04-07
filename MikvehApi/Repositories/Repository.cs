@@ -6,10 +6,9 @@ using MikvehApi.Repositories.Interfaces;
 
 namespace MikvehApi.Repositories;
 
-public abstract class Repository<T>(AppDbContext context, IMapper mapper) : IRepository<T> where T : class
+public abstract class Repository<T>(AppDbContext context) : IRepository<T> where T : class
 {
     protected readonly AppDbContext _context = context;
-    private readonly IMapper _mapper = mapper;
 
     public virtual async Task<T?> GetByIdAsync(int id)
     {

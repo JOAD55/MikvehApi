@@ -8,5 +8,5 @@ namespace MikvehApi.Repositories;
 
 public class DetalleCitaRepository : Repository<DetalleCita>, IDetalleCitaRepository
 {
-    public DetalleCitaRepository(AppDbContext context, IMapper mapper) : base(context, mapper) { }
+    public DetalleCitaRepository(AppDbContext context) : base(context) { }
 }

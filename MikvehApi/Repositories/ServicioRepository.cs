@@ -8,5 +8,5 @@ namespace MikvehApi.Repositories;
 
 public class ServicioRepository : Repository<Servicio>, IServicioRepository
 {
-    public ServicioRepository(AppDbContext context, IMapper mapper) : base(context, mapper) { }
+    public ServicioRepository(AppDbContext context) : base(context) { }
 }

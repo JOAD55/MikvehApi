@@ -6,6 +6,6 @@ using MikvehApi.Repositories.Interfaces;
 
 namespace MikvehApi.Repositories;
 
-public class ClienteRepository(AppDbContext context, IMapper mapper) : Repository<Cliente>(context, mapper), IClienteRepository
+public class ClienteRepository(AppDbContext context) : Repository<Cliente>(context), IClienteRepository
 {
 }

@@ -9,7 +9,7 @@ namespace MikvehApi.Repositories;
 
 public class TrabajadorRepository : Repository<Trabajador>, ITrabajadorRepository
 {
-    public TrabajadorRepository(AppDbContext context, IMapper mapper) : base(context, mapper) { }
+    public TrabajadorRepository(AppDbContext context) : base(context) { }
 
     public override async Task<IEnumerable<Trabajador>> GetAllAsync()
     {

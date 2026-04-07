@@ -8,5 +8,5 @@ namespace MikvehApi.Repositories;
 
 public class RolRepository : Repository<Rol>, IRolRepository
 {
-    public RolRepository(AppDbContext context, IMapper mapper) : base(context, mapper) { }
+    public RolRepository(AppDbContext context) : base(context) { }
 }
