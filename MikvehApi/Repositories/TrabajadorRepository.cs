@@ -1,4 +1,5 @@
 using System;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MikvehApi.Data;
 using MikvehApi.Models;
@@ -8,7 +9,7 @@ namespace MikvehApi.Repositories;
 
 public class TrabajadorRepository : Repository<Trabajador>, ITrabajadorRepository
 {
-    public TrabajadorRepository(AppDbContext context) : base(context) { }
+    public TrabajadorRepository(AppDbContext context, IMapper mapper) : base(context, mapper) { }
 
     public override async Task<IEnumerable<Trabajador>> GetAllAsync()
     {

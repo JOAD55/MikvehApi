@@ -1,4 +1,5 @@
 using System;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MikvehApi.Data;
 using MikvehApi.Models;
@@ -8,7 +9,7 @@ namespace MikvehApi.Repositories;
 
 public class CitaRepository : Repository<Cita>, ICitaRepository
 {
-    public CitaRepository(AppDbContext context) : base(context) { }
+    public CitaRepository(AppDbContext context, IMapper mapper) : base(context, mapper) { }
 
     public override async Task<IEnumerable<Cita>> GetAllAsync()
     {
@@ -20,15 +21,9 @@ public class CitaRepository : Repository<Cita>, ICitaRepository
 
     public async Task<IEnumerable<Cita>> GetByPeriodAsync(DateTime startDate, DateTime endDate)
     {
-        return await _context.Citas.Where(c => c.FechaHoraCita >= startDate && c.FechaHoraCita <= endDate).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Cita>> GetByPeriodAndDetailsAsync(DateTime startDate, DateTime endDate)
-    {
         return await _context.Citas.Include(c => c.Cliente)
-                .Include(c => c.Trabajador)
-                .Where(c => c.FechaHoraCita >= startDate && c.FechaHoraCita <= endDate)
-                .ToListAsync();
+            .Include(c => c.Trabajador)
+            .Where(c => c.FechaHoraCita >= startDate && c.FechaHoraCita <= endDate).ToListAsync();
     }
 
     public async Task<Cita?> GetWithDetallesAsync(int id)
