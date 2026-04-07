@@ -30,6 +30,17 @@ public class CitaDto
     };
 }
 
+public class DetailCitaDto
+{
+    public int CitaId { get; set; }
+    public DateTime FechaHoraCita { get; set; }
+    public string? Descripcion { get; set; }
+    public decimal TotalPagar { get; set; }
+    public SummaryClienteDto Cliente { get; set; } = null!;
+    public SummaryTrabajadorDto? Trabajador { get; set; }
+    public ICollection<DetailCitaDto> DetallesCita { get; set; } = [];
+}
+
 public class CreateCitaDto
 {
     [Required(ErrorMessage = "El campo de fecha es obligatorio")]
