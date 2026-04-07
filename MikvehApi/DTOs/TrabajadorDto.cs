@@ -18,6 +18,12 @@ public class TrabajadorDto
     public string? RolNombre { get; set; }
 }
 
+public class SummaryTrabajadorDto
+{
+    public int TrabajadorId { get; set; }
+    public string NombreCompleto { get; set; } = string.Empty;
+}
+
 public class CreateTrabajadorDto
 {
     [Required(ErrorMessage = "El campo nombre es obligatorio")]
