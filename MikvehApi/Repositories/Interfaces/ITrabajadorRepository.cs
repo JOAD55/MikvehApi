@@ -5,5 +5,6 @@ namespace MikvehApi.Repositories.Interfaces;
 
 public interface ITrabajadorRepository : IRepository<Trabajador>
 {
-    Task<Trabajador?> GetByUserAsync(string usuario);  
+    Task<Trabajador?> GetByUserAsync(string usuario);
+    Task<bool> ExistAsync(string usuario);
 }

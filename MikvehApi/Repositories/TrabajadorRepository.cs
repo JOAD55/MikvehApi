@@ -11,6 +11,13 @@ public class TrabajadorRepository : Repository<Trabajador>, ITrabajadorRepositor
 {
     public TrabajadorRepository(AppDbContext context) : base(context) { }
 
+    public async Task<bool> ExistAsync(string usuario)
+    {
+        var trabajador = await _context.Trabajadores.FirstOrDefaultAsync(t => t.Usuario == usuario);
+
+        return trabajador is not null;
+    }
+
     public override async Task<IEnumerable<Trabajador>> GetAllAsync()
     {
         return await _context.Trabajadores.Include(t => t.Rol).ToListAsync();
