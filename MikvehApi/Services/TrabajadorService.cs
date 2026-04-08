@@ -37,6 +37,10 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
 
     public async Task<TrabajadorDto> CreateAsync(CreateTrabajadorDto dto)
     {
+        bool usuarioExiste = await _trabajadorRepository.ExistAsync(dto.Usuario.ToLower());
+        if (usuarioExiste)
+            throw new InvalidOperationException("El nombre de usuario ya está en uso.");
+
         string contrasenaHash = BCrypt.Net.BCrypt.HashPassword(dto.Contrasena);
         string lowerUser = dto.Usuario.ToLower();
         string? lowerEmail = dto.Email?.ToLower();
