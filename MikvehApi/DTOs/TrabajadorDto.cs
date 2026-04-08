@@ -26,25 +26,54 @@ public class SummaryTrabajadorDto
 
 public class CreateTrabajadorDto
 {
-    [Required(ErrorMessage = "El campo nombre es obligatorio")]
-    [MaxLength(255, ErrorMessage = "El nombre no debe superar los 255 caracteres")]
+    [Required]
+    [MaxLength(255)]
     public string Nombre { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(255)]
     public string Apellidos { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(100)]
     public string Usuario { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(100)]
+    [DataType(DataType.Password)]
     public string Contrasena { get; set; } = string.Empty;
+
+    [Phone]
     public string? Telefono { get; set; }
+
+    [MaxLength(255)]
+    [EmailAddress]
     public string? Email { get; set; }
+
+    [DataType(DataType.DateTime)]
     public DateTime? FechaNacimiento { get; set; }
 
+    [Range(1, int.MaxValue)]
     public int RolId { get; set; }
 }
 
 public class UpdateTrabajadorDto
 {
+    [MaxLength(255)]
     public string? Nombre { get; set; }
+
+    [MaxLength(255)]
     public string? Apellidos { get; set; }
+
+    [Phone]
     public string? Telefono { get; set; }
+
+    [EmailAddress]
     public string? Email { get; set; }
+
+    [DataType(DataType.DateTime)]
     public DateTime? FechaNacimiento { get; set; }
+    
+    [Range(1, int.MaxValue)]
     public int? RolId { get; set; }
 }
