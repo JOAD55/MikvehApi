@@ -16,6 +16,11 @@ public class TrabajadorRepository : Repository<Trabajador>, ITrabajadorRepositor
         return await _context.Trabajadores.Include(t => t.Rol).ToListAsync();
     }
 
+    public override async Task<Trabajador?> GetByIdAsync(int id)
+    {
+        return await _context.Trabajadores.Include(t => t.Rol).FirstOrDefaultAsync(t => t.TrabajadorId == id);
+    }
+
     public async Task<Trabajador?> GetByUserAsync(string usuario)
     {
         return await _context.Trabajadores.Include(t => t.Rol).FirstOrDefaultAsync(t => t.Usuario == usuario);

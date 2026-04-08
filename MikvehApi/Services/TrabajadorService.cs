@@ -29,7 +29,7 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
     public async Task<TrabajadorDto?> GetByUserAsync(string user)
     {
         var trabajador = await _trabajadorRepository.GetByUserAsync(user);
-        
+
         if (trabajador is null) return null;
 
         return ToDto(trabajador);
@@ -55,7 +55,8 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
 
         await _trabajadorRepository.AddAsync(trabajador);
 
-        return ToDto(trabajador);
+        var trabajadorConRol = await _trabajadorRepository.GetByIdAsync(trabajador.TrabajadorId);
+        return ToDto(trabajadorConRol!);
     }
 
     public async Task<TrabajadorDto?> UpdateAsync(int id, UpdateTrabajadorDto dto)
@@ -91,14 +92,14 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
     private TrabajadorDto ToDto(Trabajador entity) => new TrabajadorDto
     {
         TrabajadorId = entity.TrabajadorId,
-        Nombre = entity?.Nombre ?? string.Empty,
-        Apellidos = entity?.Apellidos ?? string.Empty,
-        Usuario = entity?.Usuario ?? string.Empty,
-        Telefono = entity?.Telefono ?? string.Empty,
-        Email = entity?.Email ?? string.Empty,
-        FechaNacimiento = entity?.FechaNacimiento,
-        RolId = entity?.RolId,
-        RolNombre = entity?.Rol.Nombre
+        Nombre = entity.Nombre ?? string.Empty,
+        Apellidos = entity.Apellidos ?? string.Empty,
+        Usuario = entity.Usuario ?? string.Empty,
+        Telefono = entity.Telefono ?? string.Empty,
+        Email = entity.Email ?? string.Empty,
+        FechaNacimiento = entity.FechaNacimiento,
+        RolId = entity.RolId,
+        RolNombre = entity.Rol?.Nombre
     };
 
 }
