@@ -1,10 +1,33 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace MikvehApi.DTOs;
 
 public class ServicioDto
 {
+    public int ServicioId { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string? Descripcion { get; set; }
+    public int DuracionMinutos { get; set; }
+    public decimal PrecioBase { get; set; }
+}
 
+public class CreateServicioDto
+{
+    [Required(ErrorMessage = "El nombre es obligatorio")]
+    [MaxLength(100, ErrorMessage = "El nombre no debe superar los 100 caracteres")]
+    public string Nombre { get; set; } = string.Empty;
+    public string? Descripcion { get; set; }
+    public int DuracionMinutos { get; set; }
+    public decimal PrecioBase { get; set; } = 0;
+}
+
+public class UpdateServicioDto
+{
+    public string? Nombre { get; set; }
+    public string? Descripcion { get; set; }
+    public int? DuracionMinutos { get; set; }
+    public decimal? PrecioBase { get; set; }
 }
 
 public class SummaryServicioDto
