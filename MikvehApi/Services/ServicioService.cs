@@ -53,7 +53,10 @@ public class ServicioService(IServicioRepository servicioRepository, IMapper map
 
         if (servicio is null) return null;
 
-        _mapper.Map(dto, servicio);
+        if (dto.Nombre is not null) servicio.Nombre = dto.Nombre;
+        if (dto.Descripcion is not null) servicio.Descripcion = dto.Descripcion;
+        if (dto.DuracionMinutos is not null) servicio.DuracionMinutos = (int)dto.DuracionMinutos;
+        if (dto.PrecioBase is not null) servicio.PrecioBase = (decimal)dto.PrecioBase;
 
         await _servicioRepository.UpdateAsync(servicio);
 
