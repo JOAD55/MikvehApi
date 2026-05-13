@@ -9,6 +9,8 @@ public class PaqueteProfile : Profile
 {
     public PaqueteProfile()
     {
+        CreateMap<Paquete, PaqueteDto>();
+        CreateMap<CreatePaqueteDto, Paquete>();
         CreateMap<Paquete, SummaryPaqueteDto>();
     }
 }
