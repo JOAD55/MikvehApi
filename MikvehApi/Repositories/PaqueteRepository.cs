@@ -16,8 +16,6 @@ public class PaqueteRepository : Repository<Paquete>, IPaqueteRepository
     {
         return await _context.Paquetes
             .Include(P => P.DetallesPaquete)
-                .ThenInclude(Dp => Dp.Paquete)
-            .Include(P => P.DetallesPaquete)
                 .ThenInclude(Dp => Dp.Servicio)
             .FirstOrDefaultAsync(P => P.PaqueteId == id);
     }
@@ -25,8 +23,6 @@ public class PaqueteRepository : Repository<Paquete>, IPaqueteRepository
     public override async Task<IEnumerable<Paquete>> GetAllAsync()
     {
         return await _context.Paquetes
-            .Include(P => P.DetallesPaquete)
-                .ThenInclude(Dp => Dp.Paquete)
             .Include(P => P.DetallesPaquete)
                 .ThenInclude(Dp => Dp.Servicio)
             .ToListAsync();
