@@ -7,9 +7,10 @@ using MikvehApi.Services.Interfaces;
 
 namespace MikvehApi.Services;
 
-public class PaqueteService(IPaqueteRepository paqueteRepository, IMapper mapper) : IPaqueteService
+public class PaqueteService(IPaqueteRepository paqueteRepository, IServicioRepository servicioRepository, IMapper mapper) : IPaqueteService
 {
     private readonly IPaqueteRepository _paqueteRepository = paqueteRepository;
+    private readonly IServicioRepository _servicioRepository = servicioRepository;
     private readonly IMapper _mapper = mapper;
 
     public async Task<PaqueteDto> CreateAsync(CreatePaqueteDto dto)
@@ -21,6 +22,21 @@ public class PaqueteService(IPaqueteRepository paqueteRepository, IMapper mapper
         return _mapper.Map<PaqueteDto>(paquete);
     }
 
+    public async Task<DetallePaqueteDto?> CreateDetalleAsync(CreateDetallePaqueteDto dto)
+    {
+        var paquete = GetByIdAsync(dto.PaqueteId);
+        if (paquete is null) return null;
+
+        var servicio = _servicioRepository.GetByIdAsync(dto.ServicioId);
+        if ( servicio is null) return null;
+
+        var detallePaquete = _mapper.Map<DetallePaquete>(dto);
+
+        await _paqueteRepository.AddDetalleAsync(detallePaquete);
+
+        return _mapper.Map<DetallePaqueteDto>(detallePaquete);
+    }
+
     public async Task<bool> DeleteAsync(int id)
     {
         var paquete = await _paqueteRepository.GetByIdAsync(id);
@@ -29,6 +45,16 @@ public class PaqueteService(IPaqueteRepository paqueteRepository, IMapper mapper
 
         await _paqueteRepository.DeleteAsync(id);
 
+        return true;
+    }
+
+    public async Task<bool> DeleteDetalleAsync(int id)
+    {
+        var detalle = await _paqueteRepository.GetDetallaByIdAsync(id);
+
+        if (detalle is null) return false;
+
+        await _paqueteRepository.DeleteDetalleAsync(id);
         return true;
     }
 
@@ -47,6 +73,15 @@ public class PaqueteService(IPaqueteRepository paqueteRepository, IMapper mapper
         if (paquete is null) return null;
 
         return _mapper.Map<PaqueteDto>(paquete);
+    }
+
+    public async Task<DetallePaqueteDto?> GetDetalleByIdAsync(int id)
+    {
+        var detalle = await _paqueteRepository.GetDetallaByIdAsync(id);
+
+        if (detalle is null) return null;
+
+        return _mapper.Map<DetallePaqueteDto>(detalle);
     }
 
     public async Task<PaqueteDto?> UpdateAsync(int id, UpdatePaqueteDto dto)
