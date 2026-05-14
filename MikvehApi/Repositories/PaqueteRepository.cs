@@ -27,4 +27,19 @@ public class PaqueteRepository : Repository<Paquete>, IPaqueteRepository
                 .ThenInclude(Dp => Dp.Servicio)
             .ToListAsync();
     }
+
+    public async Task AddDetalleAsync(DetallePaquete detallePaquete)
+    {
+        await _context.DetallesPaquete.AddAsync(detallePaquete);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteDetalleAsync(int id)
+    {
+        var detalle = await _context.DetallesPaquete.FindAsync(id);
+        if (detalle is not null)
+        {
+            _context.DetallesPaquete.Remove(detalle);
+        }
+    }
 }
