@@ -27,12 +27,30 @@ public class PaquetesController(IPaqueteService paqueteService) : ControllerBase
         return paquete is null? NotFound() : Ok(paquete);
     }
 
+    [HttpGet("detalles/{id}")]
+    public async Task<IActionResult> GetDetalleById(int id)
+    {
+        var detalle = await _paqueteService.GetDetalleByIdAsync(id);
+
+        return detalle is null? NotFound() : Ok(detalle);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create(CreatePaqueteDto dto)
     {
         var paquete = await _paqueteService.CreateAsync(dto);
 
         return CreatedAtAction(nameof(GetById), new {id = paquete.PaqueteId}, paquete);
+    }
+
+    [HttpPost("detalles")]
+    public async Task<IActionResult> CreateDetalle(CreateDetallePaqueteDto dto)
+    {
+        var detalle = await _paqueteService.CreateDetalleAsync(dto);
+
+        if (detalle is null) return BadRequest();
+
+        return CreatedAtAction(nameof(GetDetalleById), new {id = detalle?.DetallePaqueteId}, detalle);
     }
 
     [HttpPut("{id}")]
@@ -49,5 +67,13 @@ public class PaquetesController(IPaqueteService paqueteService) : ControllerBase
         var paquete = await _paqueteService.DeleteAsync(id);
 
         return !paquete ? NotFound() : NoContent();
+    }
+
+    [HttpDelete("detalles/{id}")]
+    public async Task<IActionResult> DeleteDetalle(int id)
+    {
+        var detalle = await _paqueteService.DeleteDetalleAsync(id);
+
+        return !detalle ? NotFound() : NoContent();
     }
 }
