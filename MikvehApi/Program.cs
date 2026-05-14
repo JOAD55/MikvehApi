@@ -38,6 +38,7 @@ builder.Services.AddScoped<ITrabajadorService, TrabajadorService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<ICitaService, CitaService>();
 builder.Services.AddScoped<IServicioService, ServicioService>();
+builder.Services.AddScoped<IPaqueteService, PaqueteService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
