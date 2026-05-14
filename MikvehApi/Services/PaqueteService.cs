@@ -24,10 +24,10 @@ public class PaqueteService(IPaqueteRepository paqueteRepository, IServicioRepos
 
     public async Task<DetallePaqueteDto?> CreateDetalleAsync(CreateDetallePaqueteDto dto)
     {
-        var paquete = GetByIdAsync(dto.PaqueteId);
+        var paquete = await GetByIdAsync(dto.PaqueteId);
         if (paquete is null) return null;
 
-        var servicio = _servicioRepository.GetByIdAsync(dto.ServicioId);
+        var servicio = await _servicioRepository.GetByIdAsync(dto.ServicioId);
         if ( servicio is null) return null;
 
         var detallePaquete = _mapper.Map<DetallePaquete>(dto);
