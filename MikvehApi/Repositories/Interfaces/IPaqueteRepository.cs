@@ -9,4 +9,5 @@ public interface IPaqueteRepository : IRepository<Paquete>
 {
     Task AddDetalleAsync(DetallePaquete detallePaquete);
     Task DeleteDetalleAsync(int id);
+    Task<DetallePaquete?> GetDetallaByIdAsync(int id);
 }

@@ -40,6 +40,12 @@ public class PaqueteRepository : Repository<Paquete>, IPaqueteRepository
         if (detalle is not null)
         {
             _context.DetallesPaquete.Remove(detalle);
+            await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<DetallePaquete?> GetDetallaByIdAsync(int id)
+    {
+        return await _context.DetallesPaquete.FindAsync(id);
     }
 }
