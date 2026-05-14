@@ -46,6 +46,9 @@ public class PaqueteRepository : Repository<Paquete>, IPaqueteRepository
 
     public async Task<DetallePaquete?> GetDetallaByIdAsync(int id)
     {
-        return await _context.DetallesPaquete.FindAsync(id);
+        return await _context.DetallesPaquete
+            .Include(dp => dp.Paquete)
+            .Include(dp => dp.Servicio)
+            .FirstOrDefaultAsync(dp => dp.DetallePaqueteId == id);
     }
 }
