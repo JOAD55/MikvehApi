@@ -19,12 +19,62 @@ public class CitasController(ICitaService citaService) : ControllerBase
         return Ok(citas);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var cita = await _citaService.GetWithDetailsAsync(id);
 
         return cita is null ? NotFound() : Ok(cita);
+    }
+
+    [HttpGet("con-detalles")]
+    public async Task<IActionResult> GetAllWithDetails()
+    {
+        var citas = await _citaService.GetAllWithDetailsAsync();
+
+        return Ok(citas);
+    }
+
+    [HttpGet("futuras")]
+    public async Task<IActionResult> GetFuturas()
+    {
+        var citas = await _citaService.GetFuturasAsync();
+
+        return Ok(citas);
+    }
+
+    [HttpGet("semana")]
+    public async Task<IActionResult> GetSemana([FromQuery] DateTime? fecha)
+    {
+        var citas = await _citaService.GetByWeekAsync(fecha);
+
+        return Ok(citas);
+    }
+
+    [HttpGet("mes")]
+    public async Task<IActionResult> GetMes([FromQuery] DateTime? fecha)
+    {
+        var citas = await _citaService.GetByMonthAsync(fecha);
+
+        return Ok(citas);
+    }
+
+    [HttpGet("periodo")]
+    public async Task<IActionResult> GetPeriodo([FromQuery] DateTime inicio, [FromQuery] DateTime fin)
+    {
+        if (fin < inicio) return BadRequest("La fecha final no puede ser anterior a la fecha de inicio.");
+
+        var citas = await _citaService.GetByPeriodAsync(inicio, fin);
+
+        return Ok(citas);
+    }
+
+    [HttpGet("detalles/{id}")]
+    public async Task<IActionResult> GetDetalleById(int id)
+    {
+        var detalle = await _citaService.GetDetalleByIdAsync(id);
+
+        return detalle is null ? NotFound() : Ok(detalle);
     }
 
     [HttpPost]
@@ -35,7 +85,17 @@ public class CitasController(ICitaService citaService) : ControllerBase
         return CreatedAtAction(nameof(GetById), new {id = cita.CitaId}, cita);
     }
 
-    [HttpPatch]
+    [HttpPost("detalles")]
+    public async Task<IActionResult> CreateDetalle(CreateDetalleCitaDto dto)
+    {
+        var detalle = await _citaService.CreateDetalleAsync(dto);
+
+        if (detalle is null) return BadRequest();
+
+        return CreatedAtAction(nameof(GetDetalleById), new {id = detalle.DetalleCitaId}, detalle);
+    }
+
+    [HttpPatch("{id:int}")]
     public async Task<IActionResult> Update(int id, UpdateCitaDto dto)
     {
         var cita = await _citaService.UpdateAsync(id, dto);
@@ -43,11 +103,19 @@ public class CitasController(ICitaService citaService) : ControllerBase
         return cita is null ? NotFound() : Ok(cita);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var cita = await _citaService.DeleteAsync(id);
 
         return !cita ? NotFound() : NoContent();
+    }
+
+    [HttpDelete("detalles/{id}")]
+    public async Task<IActionResult> DeleteDetalle(int id)
+    {
+        var detalle = await _citaService.DeleteDetalleAsync(id);
+
+        return !detalle ? NotFound() : NoContent();
     }
 }

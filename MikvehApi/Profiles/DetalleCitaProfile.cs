@@ -10,5 +10,7 @@ public class DetalleCitaProfile : Profile
     public DetalleCitaProfile()
     {
         CreateMap<DetalleCita, DetalleCitaDto>();
+        CreateMap<CreateDetalleCitaDto, DetalleCita>()
+            .ForMember(dest => dest.Subtotal, opt => opt.Ignore());
     }
 }

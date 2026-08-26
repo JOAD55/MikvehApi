@@ -38,7 +38,7 @@ public class DetailCitaDto
     public decimal TotalPagar { get; set; }
     public SummaryClienteDto Cliente { get; set; } = null!;
     public SummaryTrabajadorDto? Trabajador { get; set; }
-    public ICollection<DetailCitaDto> DetallesCita { get; set; } = [];
+    public ICollection<DetalleCitaDto> DetallesCita { get; set; } = [];
 }
 
 public class CreateCitaDto
