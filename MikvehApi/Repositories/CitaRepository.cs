@@ -11,6 +11,14 @@ public class CitaRepository : Repository<Cita>, ICitaRepository
 {
     public CitaRepository(AppDbContext context) : base(context) { }
 
+    public override async Task<Cita?> GetByIdAsync(int id)
+    {
+        return await _context.Citas
+                .Include(c => c.Cliente)
+                .Include(c => c.Trabajador)
+                .FirstOrDefaultAsync(c => c.CitaId == id);
+    }
+
     public override async Task<IEnumerable<Cita>> GetAllAsync()
     {
         return await _context.Citas
