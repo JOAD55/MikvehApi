@@ -7,9 +7,17 @@ using MikvehApi.Services.Interfaces;
 
 namespace MikvehApi.Services;
 
-public class CitaService(ICitaRepository citaRepository, IMapper mapper) : ICitaService
+public class CitaService(
+    ICitaRepository citaRepository,
+    IDetalleCitaRepository detalleCitaRepository,
+    IServicioRepository servicioRepository,
+    IPaqueteRepository paqueteRepository,
+    IMapper mapper) : ICitaService
 {
     private readonly ICitaRepository _citaRepository = citaRepository;
+    private readonly IDetalleCitaRepository _detalleCitaRepository = detalleCitaRepository;
+    private readonly IServicioRepository _servicioRepository = servicioRepository;
+    private readonly IPaqueteRepository _paqueteRepository = paqueteRepository;
     private readonly IMapper _mapper = mapper;
 
     public async Task<CitaDto> CreateAsync(CreateCitaDto dto)
@@ -38,9 +46,11 @@ public class CitaService(ICitaRepository citaRepository, IMapper mapper) : ICita
         return citas.Select(c => CitaDto.FromEntity(c));
     }
 
-    public Task<IEnumerable<DetailCitaDto>> GetAllWithDetailsAsync()
+    public async Task<IEnumerable<DetailCitaDto>> GetAllWithDetailsAsync()
     {
-        throw new NotImplementedException();
+        var citas = await _citaRepository.GetAllWithDetailsAsync();
+
+        return citas.Select(c => _mapper.Map<DetailCitaDto>(c));
     }
 
     public async Task<CitaDto?> GetByIdAsync(int id)
@@ -55,6 +65,34 @@ public class CitaService(ICitaRepository citaRepository, IMapper mapper) : ICita
         var citas = await _citaRepository.GetByPeriodAsync(startDate, endDate);
 
         return citas.Select(c => CitaDto.FromEntity(c));
+    }
+
+    public async Task<IEnumerable<CitaDto>> GetFuturasAsync()
+    {
+        var citas = await _citaRepository.GetFuturasAsync();
+
+        return citas.Select(c => CitaDto.FromEntity(c));
+    }
+
+    public async Task<IEnumerable<CitaDto>> GetByWeekAsync(DateTime? referenceDate)
+    {
+        var fecha = (referenceDate ?? DateTime.Now).Date;
+
+        int diasDesdeLunes = ((int)fecha.DayOfWeek + 6) % 7;
+        var inicioSemana = fecha.AddDays(-diasDesdeLunes);
+        var finSemana = inicioSemana.AddDays(7).AddTicks(-1);
+
+        return await GetByPeriodAsync(inicioSemana, finSemana);
+    }
+
+    public async Task<IEnumerable<CitaDto>> GetByMonthAsync(DateTime? referenceDate)
+    {
+        var fecha = (referenceDate ?? DateTime.Now).Date;
+
+        var inicioMes = new DateTime(fecha.Year, fecha.Month, 1);
+        var finMes = inicioMes.AddMonths(1).AddTicks(-1);
+
+        return await GetByPeriodAsync(inicioMes, finMes);
     }
 
     public async Task<DetailCitaDto?> GetWithDetailsAsync(int id)
@@ -79,5 +117,71 @@ public class CitaService(ICitaRepository citaRepository, IMapper mapper) : ICita
         await _citaRepository.UpdateAsync(cita);
 
         return _mapper.Map<CitaDto>(cita);
+    }
+
+    public async Task<DetalleCitaDto?> CreateDetalleAsync(CreateDetalleCitaDto dto)
+    {
+        var cita = await _citaRepository.GetByIdAsync(dto.CitaId);
+        if (cita is null) return null;
+
+        bool tieneServicio = dto.ServicioId is not null;
+        bool tienePaquete = dto.PaqueteId is not null;
+        if (tieneServicio == tienePaquete) return null;
+
+        decimal precioUnitario;
+
+        if (tieneServicio)
+        {
+            var servicio = await _servicioRepository.GetByIdAsync(dto.ServicioId!.Value);
+            if (servicio is null) return null;
+            precioUnitario = servicio.PrecioBase;
+        }
+        else
+        {
+            var paquete = await _paqueteRepository.GetByIdAsync(dto.PaqueteId!.Value);
+            if (paquete is null) return null;
+            precioUnitario = paquete.Precio;
+        }
+
+        var detalle = _mapper.Map<DetalleCita>(dto);
+        detalle.Subtotal = precioUnitario * dto.Cantidad;
+
+        await _detalleCitaRepository.AddAsync(detalle);
+
+        await RecalcularTotalPagarAsync(dto.CitaId);
+
+        var detalleCreado = await _detalleCitaRepository.GetByIdAsync(detalle.DetalleCitaId);
+        return _mapper.Map<DetalleCitaDto>(detalleCreado);
+    }
+
+    public async Task<bool> DeleteDetalleAsync(int id)
+    {
+        var detalle = await _detalleCitaRepository.GetByIdAsync(id);
+        if (detalle is null) return false;
+
+        int citaId = detalle.CitaId;
+
+        await _detalleCitaRepository.DeleteAsync(id);
+
+        await RecalcularTotalPagarAsync(citaId);
+
+        return true;
+    }
+
+    public async Task<DetalleCitaDto?> GetDetalleByIdAsync(int id)
+    {
+        var detalle = await _detalleCitaRepository.GetByIdAsync(id);
+
+        return detalle is null ? null : _mapper.Map<DetalleCitaDto>(detalle);
+    }
+
+    private async Task RecalcularTotalPagarAsync(int citaId)
+    {
+        var cita = await _citaRepository.GetWithDetallesAsync(citaId);
+        if (cita is null) return;
+
+        cita.TotalPagar = cita.DetallesCita.Sum(d => d.Subtotal);
+
+        await _citaRepository.UpdateAsync(cita);
     }
 }
