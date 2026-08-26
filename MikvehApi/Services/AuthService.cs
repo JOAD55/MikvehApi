@@ -28,4 +28,24 @@ public class AuthService(ITrabajadorRepository trabajadorRepository, ITokenServi
             Trabajador = _mapper.Map<TrabajadorDto>(trabajador)
         };
     }
+
+    public async Task<TrabajadorDto?> GetPerfilAsync(int trabajadorId)
+    {
+        var trabajador = await _trabajadorRepository.GetByIdAsync(trabajadorId);
+
+        return trabajador is null ? null : _mapper.Map<TrabajadorDto>(trabajador);
+    }
+
+    public async Task<bool> CambiarPasswordAsync(int trabajadorId, CambiarPasswordDto dto)
+    {
+        var trabajador = await _trabajadorRepository.GetByIdAsync(trabajadorId);
+        if (trabajador is null) return false;
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.ContrasenaActual, trabajador.ContrasenaHash)) return false;
+
+        trabajador.ContrasenaHash = BCrypt.Net.BCrypt.HashPassword(dto.ContrasenaNueva);
+        await _trabajadorRepository.UpdateAsync(trabajador);
+
+        return true;
+    }
 }
