@@ -46,6 +46,8 @@ public class CreateCitaDto
     [Required(ErrorMessage = "El campo de fecha es obligatorio")]
     public DateTime FechaHoraCita { get; set; }
     public string? Descripcion { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "El cliente es obligatorio")]
     public int ClienteId { get; set; }
     public int? TrabajadorId { get; set; }
 }

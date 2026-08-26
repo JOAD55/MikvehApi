@@ -10,7 +10,11 @@ public class TrabajadorProfile : Profile
     public TrabajadorProfile()
     {
         CreateMap<Trabajador, SummaryTrabajadorDto>()
-            .ForMember(dest => dest.NombreCompleto, 
+            .ForMember(dest => dest.NombreCompleto,
                 opt => opt.MapFrom(src => $"{src.Nombre} {src.Apellidos}"));
+
+        CreateMap<Trabajador, TrabajadorDto>()
+            .ForMember(dest => dest.RolNombre,
+                opt => opt.MapFrom(src => src.Rol != null ? src.Rol.Nombre : null));
     }
 }

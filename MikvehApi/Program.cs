@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MikvehApi.Data;
+using MikvehApi.Middleware;
 using MikvehApi.Profiles;
 using MikvehApi.Repositories;
 using MikvehApi.Repositories.Interfaces;
@@ -7,6 +8,9 @@ using MikvehApi.Services;
 using MikvehApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
+const string CorsPolicyName = "ConfiguredOrigins";
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 
 // Add services to the container.
 
@@ -45,6 +49,22 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program));
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicyName, policy =>
+    {
+        if (allowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(allowedOrigins)
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }
+    });
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -52,14 +72,19 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
 }
+
+app.UseExceptionHandler();
+
 // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
+if (app.Environment.IsDevelopment())
+{
     app.UseSwagger();
     app.UseSwaggerUI();
-// }
+}
 
 app.UseHttpsRedirection();
+
+app.UseCors(CorsPolicyName);
 
 app.UseAuthorization();
 
