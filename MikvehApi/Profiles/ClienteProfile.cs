@@ -10,7 +10,10 @@ public class ClienteProfile : Profile
     public ClienteProfile()
     {
         CreateMap<Cliente, SummaryClienteDto>()
-            .ForMember(dest => dest.NombreCompleto, 
+            .ForMember(dest => dest.NombreCompleto,
                 opt => opt.MapFrom(src => $"{src.Nombre} {src.Apellidos}"));
+
+        CreateMap<Cliente, ClienteDto>();
+        CreateMap<CreateClienteDto, Cliente>();
     }
 }

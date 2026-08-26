@@ -1,4 +1,5 @@
 using System;
+using AutoMapper;
 using MikvehApi.DTOs;
 using MikvehApi.Models;
 using MikvehApi.Repositories.Interfaces;
@@ -6,15 +7,16 @@ using MikvehApi.Services.Interfaces;
 
 namespace MikvehApi.Services;
 
-public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITrabajadorService
+public class TrabajadorService(ITrabajadorRepository trabajadorRepository, IMapper mapper) : ITrabajadorService
 {
     private readonly ITrabajadorRepository _trabajadorRepository = trabajadorRepository;
+    private readonly IMapper _mapper = mapper;
 
     public async Task<IEnumerable<TrabajadorDto>> GetAllAsync()
     {
         var trabajadores = await _trabajadorRepository.GetAllAsync();
 
-        return trabajadores.Select(t => ToDto(t));
+        return trabajadores.Select(t => _mapper.Map<TrabajadorDto>(t));
     }
 
     public async Task<TrabajadorDto?> GetByIdAsync(int id)
@@ -23,7 +25,7 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
 
         if (trabajador is null) return null;
 
-        return ToDto(trabajador);
+        return _mapper.Map<TrabajadorDto>(trabajador);
     }
 
     public async Task<TrabajadorDto?> GetByUserAsync(string user)
@@ -32,7 +34,7 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
 
         if (trabajador is null) return null;
 
-        return ToDto(trabajador);
+        return _mapper.Map<TrabajadorDto>(trabajador);
     }
 
     public async Task<TrabajadorDto> CreateAsync(CreateTrabajadorDto dto)
@@ -60,7 +62,7 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
         await _trabajadorRepository.AddAsync(trabajador);
 
         var trabajadorConRol = await _trabajadorRepository.GetByIdAsync(trabajador.TrabajadorId);
-        return ToDto(trabajadorConRol!);
+        return _mapper.Map<TrabajadorDto>(trabajadorConRol!);
     }
 
     public async Task<TrabajadorDto?> UpdateAsync(int id, UpdateTrabajadorDto dto)
@@ -78,7 +80,7 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
 
         await _trabajadorRepository.UpdateAsync(trabajador);
 
-        return ToDto(trabajador);
+        return _mapper.Map<TrabajadorDto>(trabajador);
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -90,20 +92,4 @@ public class TrabajadorService(ITrabajadorRepository trabajadorRepository) : ITr
         await _trabajadorRepository.DeleteAsync(id);
         return true;
     }
-
-
-
-    private TrabajadorDto ToDto(Trabajador entity) => new TrabajadorDto
-    {
-        TrabajadorId = entity.TrabajadorId,
-        Nombre = entity.Nombre ?? string.Empty,
-        Apellidos = entity.Apellidos ?? string.Empty,
-        Usuario = entity.Usuario ?? string.Empty,
-        Telefono = entity.Telefono ?? string.Empty,
-        Email = entity.Email ?? string.Empty,
-        FechaNacimiento = entity.FechaNacimiento,
-        RolId = entity.RolId,
-        RolNombre = entity.Rol?.Nombre
-    };
-
 }

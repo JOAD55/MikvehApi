@@ -1,4 +1,5 @@
 using System;
+using AutoMapper;
 using MikvehApi.DTOs;
 using MikvehApi.Models;
 using MikvehApi.Repositories.Interfaces;
@@ -6,23 +7,24 @@ using MikvehApi.Services.Interfaces;
 
 namespace MikvehApi.Services;
 
-public class RolService(IRolRepository rolRepository) : IRolService
+public class RolService(IRolRepository rolRepository, IMapper mapper) : IRolService
 {
     private readonly IRolRepository _rolRepository = rolRepository;
+    private readonly IMapper _mapper = mapper;
 
     public async Task<RolDto> CreateAsync(CreateRolDto dto)
     {
-        var rol = new Rol { Nombre = dto.Nombre, Descripcion = dto.Descripcion };
+        var rol = _mapper.Map<Rol>(dto);
 
         await _rolRepository.AddAsync(rol);
-        return ToDto(rol);
+        return _mapper.Map<RolDto>(rol);
     }
 
     public async Task<IEnumerable<RolDto>> GetAllAsync()
     {
         var roles = await _rolRepository.GetAllAsync();
 
-        return roles.Select(r => ToDto(r));
+        return roles.Select(r => _mapper.Map<RolDto>(r));
     }
 
     public async Task<RolDto?> GetByIdAsync(int id)
@@ -31,7 +33,7 @@ public class RolService(IRolRepository rolRepository) : IRolService
 
         if (rol is null) return null;
 
-        return ToDto(rol);
+        return _mapper.Map<RolDto>(rol);
     }
 
     public async Task<RolDto?> UpdateAsync(int id, UpdateRolDto dto)
@@ -45,7 +47,7 @@ public class RolService(IRolRepository rolRepository) : IRolService
 
         await _rolRepository.UpdateAsync(rol);
 
-        return ToDto(rol);
+        return _mapper.Map<RolDto>(rol);
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -57,11 +59,4 @@ public class RolService(IRolRepository rolRepository) : IRolService
         await _rolRepository.DeleteAsync(id);
         return true;
     }
-
-    private RolDto ToDto(Rol entity) => new RolDto
-    {
-        RolId = entity.RolId,
-        Nombre = entity.Nombre,
-        Descripcion = entity.Descripcion ?? string.Empty
-    };
 }

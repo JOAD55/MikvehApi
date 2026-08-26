@@ -18,15 +18,24 @@ public class CreateServicioDto
     [MaxLength(100, ErrorMessage = "El nombre no debe superar los 100 caracteres")]
     public string Nombre { get; set; } = string.Empty;
     public string? Descripcion { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "La duracion debe ser mayor a 0")]
     public int DuracionMinutos { get; set; }
+
+    [Range(0, double.MaxValue, ErrorMessage = "El precio no puede ser negativo")]
     public decimal PrecioBase { get; set; } = 0;
 }
 
 public class UpdateServicioDto
 {
+    [MaxLength(100, ErrorMessage = "El nombre no debe superar los 100 caracteres")]
     public string? Nombre { get; set; }
     public string? Descripcion { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "La duracion debe ser mayor a 0")]
     public int? DuracionMinutos { get; set; }
+
+    [Range(0, double.MaxValue, ErrorMessage = "El precio no puede ser negativo")]
     public decimal? PrecioBase { get; set; }
 }
 

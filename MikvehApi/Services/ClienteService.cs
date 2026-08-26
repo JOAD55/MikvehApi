@@ -1,4 +1,5 @@
 using System;
+using AutoMapper;
 using MikvehApi.DTOs;
 using MikvehApi.Models;
 using MikvehApi.Repositories.Interfaces;
@@ -6,26 +7,19 @@ using MikvehApi.Services.Interfaces;
 
 namespace MikvehApi.Services;
 
-public class ClienteService(IClienteRepository clienteRepository) : IClienteService
+public class ClienteService(IClienteRepository clienteRepository, IMapper mapper) : IClienteService
 {
     private readonly IClienteRepository _clienteRepository = clienteRepository;
-    
+    private readonly IMapper _mapper = mapper;
+
     public async Task<ClienteDto> CreateAsync(CreateClienteDto dto)
     {
-        string? lowerEmail = dto.Email?.ToLower();
-
-        var cliente = new Cliente
-        {
-            Nombre = dto.Nombre,
-            Apellidos = dto.Apellidos,
-            Telefono = dto.Telefono,
-            Email = lowerEmail,
-            FechaNacimiento = dto.FechaNacimiento
-        };
+        var cliente = _mapper.Map<Cliente>(dto);
+        cliente.Email = cliente.Email?.ToLower();
 
         await _clienteRepository.AddAsync(cliente);
 
-        return ToDto(cliente);
+        return _mapper.Map<ClienteDto>(cliente);
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -42,14 +36,14 @@ public class ClienteService(IClienteRepository clienteRepository) : IClienteServ
     {
         var clientes = await _clienteRepository.GetAllAsync();
 
-        return clientes.Select(c => ToDto(c));
+        return clientes.Select(c => _mapper.Map<ClienteDto>(c));
     }
 
     public async Task<ClienteDto?> GetByIdAsync(int id)
     {
         var cliente = await _clienteRepository.GetByIdAsync(id);
 
-        return cliente is null ? null : ToDto(cliente);
+        return cliente is null ? null : _mapper.Map<ClienteDto>(cliente);
     }
 
     public async Task<ClienteDto?> UpdateAsync(int id, UpdateClienteDto dto)
@@ -61,21 +55,11 @@ public class ClienteService(IClienteRepository clienteRepository) : IClienteServ
         if (dto.Nombre is not null) cliente.Nombre = dto.Nombre;
         if (dto.Apellidos is not null) cliente.Apellidos = dto.Apellidos;
         if (dto.Telefono is not null) cliente.Telefono = dto.Telefono;
-        if (dto.Email is not null) cliente.Email = dto.Email;
+        if (dto.Email is not null) cliente.Email = dto.Email.ToLower();
         if (dto.FechaNacimiento is not null) cliente.FechaNacimiento = dto.FechaNacimiento;
 
         await _clienteRepository.UpdateAsync(cliente);
 
-        return ToDto(cliente);
+        return _mapper.Map<ClienteDto>(cliente);
     }
-
-    private ClienteDto ToDto(Cliente entity) => new ClienteDto
-    {
-        ClienteId = entity.ClienteId,
-        Nombre = entity?.Nombre?? string.Empty,
-        Apellidos = entity?.Apellidos?? string.Empty,
-        Telefono = entity?.Telefono?? string.Empty,
-        Email = entity?.Email?? string.Empty,
-        FechaNacimiento = entity?.FechaNacimiento
-    };
 }
