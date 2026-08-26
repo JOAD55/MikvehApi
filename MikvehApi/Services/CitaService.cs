@@ -29,11 +29,15 @@ public class CitaService(
         return _mapper.Map<CitaDto>(cita);
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public Task<bool> DeleteAsync(int id) => DeleteAsync(id, trabajadorActualId: null, esAdmin: true);
+
+    public async Task<bool> DeleteAsync(int id, int? trabajadorActualId, bool esAdmin)
     {
         var cita = await _citaRepository.GetByIdAsync(id);
 
         if (cita is null) return false;
+
+        VerificarPermisoModificacion(cita, trabajadorActualId, esAdmin);
 
         await _citaRepository.DeleteAsync(id);
         return true;
@@ -104,11 +108,15 @@ public class CitaService(
         return _mapper.Map<DetailCitaDto>(cita);
     }
 
-    public async Task<CitaDto?> UpdateAsync(int id, UpdateCitaDto dto)
+    public Task<CitaDto?> UpdateAsync(int id, UpdateCitaDto dto) => UpdateAsync(id, dto, trabajadorActualId: null, esAdmin: true);
+
+    public async Task<CitaDto?> UpdateAsync(int id, UpdateCitaDto dto, int? trabajadorActualId, bool esAdmin)
     {
         var cita = await _citaRepository.GetByIdAsync(id);
 
         if (cita is null) return null;
+
+        VerificarPermisoModificacion(cita, trabajadorActualId, esAdmin);
 
         if (dto.FechaHoraCita is not null) cita.FechaHoraCita = dto.FechaHoraCita.Value;
         if (dto.Descripcion is not null) cita.Descripcion = dto.Descripcion;
@@ -119,10 +127,12 @@ public class CitaService(
         return _mapper.Map<CitaDto>(cita);
     }
 
-    public async Task<DetalleCitaDto?> CreateDetalleAsync(CreateDetalleCitaDto dto)
+    public async Task<DetalleCitaDto?> CreateDetalleAsync(CreateDetalleCitaDto dto, int? trabajadorActualId, bool esAdmin)
     {
         var cita = await _citaRepository.GetByIdAsync(dto.CitaId);
         if (cita is null) return null;
+
+        VerificarPermisoModificacion(cita, trabajadorActualId, esAdmin);
 
         bool tieneServicio = dto.ServicioId is not null;
         bool tienePaquete = dto.PaqueteId is not null;
@@ -154,10 +164,13 @@ public class CitaService(
         return _mapper.Map<DetalleCitaDto>(detalleCreado);
     }
 
-    public async Task<bool> DeleteDetalleAsync(int id)
+    public async Task<bool> DeleteDetalleAsync(int id, int? trabajadorActualId, bool esAdmin)
     {
         var detalle = await _detalleCitaRepository.GetByIdAsync(id);
         if (detalle is null) return false;
+
+        var cita = await _citaRepository.GetByIdAsync(detalle.CitaId);
+        if (cita is not null) VerificarPermisoModificacion(cita, trabajadorActualId, esAdmin);
 
         int citaId = detalle.CitaId;
 
@@ -173,6 +186,20 @@ public class CitaService(
         var detalle = await _detalleCitaRepository.GetByIdAsync(id);
 
         return detalle is null ? null : _mapper.Map<DetalleCitaDto>(detalle);
+    }
+
+    private static void VerificarPermisoModificacion(Cita cita, int? trabajadorActualId, bool esAdmin)
+    {
+        if (esAdmin) return;
+
+        bool esPropia = cita.TrabajadorId is not null && cita.TrabajadorId == trabajadorActualId;
+        bool esFutura = cita.FechaHoraCita >= DateTime.Now;
+
+        if (!esPropia || !esFutura)
+        {
+            throw new UnauthorizedAccessException(
+                "Solo puede modificar sus propias citas futuras.");
+        }
     }
 
     private async Task RecalcularTotalPagarAsync(int citaId)

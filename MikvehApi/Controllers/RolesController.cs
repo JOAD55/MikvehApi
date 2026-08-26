@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MikvehApi.Constants;
 using MikvehApi.DTOs;
 using MikvehApi.Models;
 using MikvehApi.Services.Interfaces;
@@ -8,7 +9,7 @@ namespace MikvehApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Administrador")]
+[Authorize(Roles = Roles.Administrador)]
 public class RolesController(IRolService rolService) : ControllerBase
 {
     private readonly IRolService _rolservice = rolService;

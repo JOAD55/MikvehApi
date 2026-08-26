@@ -48,6 +48,20 @@ public class CitaRepository : Repository<Cita>, ICitaRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Cita>> GetByPeriodWithDetailsAsync(DateTime startDate, DateTime endDate)
+    {
+        return await _context.Citas
+            .Include(c => c.Cliente)
+            .Include(c => c.Trabajador)
+            .Include(c => c.DetallesCita)
+                .ThenInclude(d => d.Servicio)
+            .Include(c => c.DetallesCita)
+                .ThenInclude(d => d.Paquete)
+            .Where(c => c.FechaHoraCita >= startDate && c.FechaHoraCita <= endDate)
+            .OrderBy(c => c.FechaHoraCita)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<Cita>> GetFuturasAsync()
     {
         return await _context.Citas.Include(c => c.Cliente)

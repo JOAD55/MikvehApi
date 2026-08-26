@@ -1,6 +1,8 @@
 using System;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MikvehApi.Constants;
 using MikvehApi.DTOs;
 using MikvehApi.Services.Interfaces;
 
@@ -12,6 +14,11 @@ namespace MikvehApi.Controllers;
 public class CitasController(ICitaService citaService) : ControllerBase
 {
     private readonly ICitaService _citaService = citaService;
+
+    private bool EsAdmin => User.IsInRole(Roles.Administrador);
+
+    private int? TrabajadorIdActual =>
+        int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : null;
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -90,7 +97,7 @@ public class CitasController(ICitaService citaService) : ControllerBase
     [HttpPost("detalles")]
     public async Task<IActionResult> CreateDetalle(CreateDetalleCitaDto dto)
     {
-        var detalle = await _citaService.CreateDetalleAsync(dto);
+        var detalle = await _citaService.CreateDetalleAsync(dto, TrabajadorIdActual, EsAdmin);
 
         if (detalle is null) return BadRequest();
 
@@ -100,7 +107,7 @@ public class CitasController(ICitaService citaService) : ControllerBase
     [HttpPatch("{id:int}")]
     public async Task<IActionResult> Update(int id, UpdateCitaDto dto)
     {
-        var cita = await _citaService.UpdateAsync(id, dto);
+        var cita = await _citaService.UpdateAsync(id, dto, TrabajadorIdActual, EsAdmin);
 
         return cita is null ? NotFound() : Ok(cita);
     }
@@ -108,7 +115,7 @@ public class CitasController(ICitaService citaService) : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var cita = await _citaService.DeleteAsync(id);
+        var cita = await _citaService.DeleteAsync(id, TrabajadorIdActual, EsAdmin);
 
         return !cita ? NotFound() : NoContent();
     }
@@ -116,7 +123,7 @@ public class CitasController(ICitaService citaService) : ControllerBase
     [HttpDelete("detalles/{id}")]
     public async Task<IActionResult> DeleteDetalle(int id)
     {
-        var detalle = await _citaService.DeleteDetalleAsync(id);
+        var detalle = await _citaService.DeleteDetalleAsync(id, TrabajadorIdActual, EsAdmin);
 
         return !detalle ? NotFound() : NoContent();
     }

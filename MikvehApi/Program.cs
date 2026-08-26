@@ -54,6 +54,7 @@ builder.Services.AddScoped<IPaqueteService, PaqueteService>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEstadisticaService, EstadisticaService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

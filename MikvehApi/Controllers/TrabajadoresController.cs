@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MikvehApi.Constants;
 using MikvehApi.DTOs;
 using MikvehApi.Models;
 using MikvehApi.Repositories.Interfaces;
@@ -42,7 +43,7 @@ public class TrabajadoresController(ITrabajadorService trabajadorService) : Cont
     }
 
     [HttpPost]
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = Roles.Administrador)]
     public async Task<IActionResult> Create(CreateTrabajadorDto dto)
     {
         var trabajador = await _trabajadorService.CreateAsync(dto);
@@ -51,7 +52,7 @@ public class TrabajadoresController(ITrabajadorService trabajadorService) : Cont
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = Roles.Administrador)]
     public async Task<IActionResult> Update(int id, UpdateTrabajadorDto dto)
     {
         var trabajador = await _trabajadorService.UpdateAsync(id , dto);
@@ -60,7 +61,7 @@ public class TrabajadoresController(ITrabajadorService trabajadorService) : Cont
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = Roles.Administrador)]
     public async Task<IActionResult> Delete(int id)
     {
         var trabajador = await _trabajadorService.DeleteAsync(id);
