@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MikvehApi.DTOs;
 using MikvehApi.Models;
@@ -9,6 +10,7 @@ namespace MikvehApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TrabajadoresController(ITrabajadorService trabajadorService) : ControllerBase
 {
     private readonly ITrabajadorService _trabajadorService = trabajadorService;
@@ -21,7 +23,7 @@ public class TrabajadoresController(ITrabajadorService trabajadorService) : Cont
         return Ok(trabajadores);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var trabajador = await _trabajadorService.GetByIdAsync(id);
@@ -40,6 +42,7 @@ public class TrabajadoresController(ITrabajadorService trabajadorService) : Cont
     }
 
     [HttpPost]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Create(CreateTrabajadorDto dto)
     {
         var trabajador = await _trabajadorService.CreateAsync(dto);
@@ -47,7 +50,8 @@ public class TrabajadoresController(ITrabajadorService trabajadorService) : Cont
         return CreatedAtAction(nameof(GetById), new {id = trabajador.TrabajadorId}, trabajador);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Update(int id, UpdateTrabajadorDto dto)
     {
         var trabajador = await _trabajadorService.UpdateAsync(id , dto);
@@ -55,7 +59,8 @@ public class TrabajadoresController(ITrabajadorService trabajadorService) : Cont
         return trabajador is null ? NotFound() : Ok(trabajador);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Delete(int id)
     {
         var trabajador = await _trabajadorService.DeleteAsync(id);

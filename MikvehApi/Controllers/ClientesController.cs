@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MikvehApi.DTOs;
 using MikvehApi.Services.Interfaces;
@@ -7,6 +8,7 @@ namespace MikvehApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ClientesController(IClienteService clienteService) : ControllerBase
 {
     private readonly IClienteService _clienteService = clienteService;

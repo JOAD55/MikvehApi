@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MikvehApi.DTOs;
 using MikvehApi.Services.Interfaces;
@@ -7,6 +8,7 @@ namespace MikvehApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CitasController(ICitaService citaService) : ControllerBase
 {
     private readonly ICitaService _citaService = citaService;
