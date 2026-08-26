@@ -18,3 +18,13 @@ public class TokenResponseDto
     public DateTime ExpiraEn { get; set; }
     public TrabajadorDto Trabajador { get; set; } = null!;
 }
+
+public class CambiarPasswordDto
+{
+    [Required(ErrorMessage = "La contrasena actual es obligatoria")]
+    public string ContrasenaActual { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "La contrasena nueva es obligatoria")]
+    [MinLength(6, ErrorMessage = "La contrasena nueva debe tener al menos 6 caracteres")]
+    public string ContrasenaNueva { get; set; } = string.Empty;
+}
